@@ -15,7 +15,7 @@ def calculate_demographic_data(print_data=True):
     average_age_men = np.round(df[df.sex == "Male"]["age"].mean(),decimals=1)
 
     # What is the percentage of people who have a Bachelor's degree?
-    percentage_bachelors = (df["education"] == "Bachelors").mean()
+    percentage_bachelors = np.round((df["education"] == "Bachelors").mean() * 100,decimals=1)
 
     # What percentage of people with advanced education (`Bachelors`, `Masters`, or `Doctorate`) make more than 50K?
     # What percentage of people without advanced education make more than 50K?
@@ -30,13 +30,12 @@ def calculate_demographic_data(print_data=True):
 
     # What is the minimum number of hours a person works per week (hours-per-week feature)?
     min_work_hours = df["hours-per-week"].min()
+    min_workers = df["hours-per-week"] == min_work_hours
 
     # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    num_min_workers = ((df["hours-per-week"] == min_work_hours)).sum()
 
-    rich_percentage = ((df["hours-per-week"] == min_work_hours) 
-                       & (df["salary"] == ">50K")).mean()
-    
+    counts = df[min_workers]["salary"].value_counts()
+    rich_percentage = (counts/counts.sum())[">50K"]
     rich_percentage = np.round(rich_percentage * 100,decimals=1)
 
     # What country has the highest percentage of people that earn >50K?
